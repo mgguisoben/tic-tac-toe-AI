@@ -1,5 +1,6 @@
 import pygame as pg
 
+from ai import AI
 from cells import Cells
 from grids import Grids
 from marker import Marker
@@ -27,83 +28,6 @@ def update_game_state(mark, i):
     game_state[i + 1] = mark
 
 
-def check_winner(state, mark):
-    if state[1] == state[2] and state[1] == state[3] and state[1] == mark:
-        return False
-    elif state[4] == state[5] and state[4] == state[6] and state[4] == mark:
-        return False
-    elif state[7] == state[8] and state[7] == state[9] and state[7] == mark:
-        return False
-    elif state[1] == state[4] and state[1] == state[7] and state[1] == mark:
-        return False
-    elif state[2] == state[5] and state[2] == state[8] and state[2] == mark:
-        return False
-    elif state[3] == state[6] and state[3] == state[9] and state[3] == mark:
-        return False
-    elif state[1] == state[5] and state[1] == state[9] and state[1] == mark:
-        return False
-    elif state[7] == state[5] and state[7] == state[3] and state[7] == mark:
-        return False
-    else:
-        return True
-
-
-def check_draw():
-    for key in game_state.keys():
-        if game_state[key] == 0:
-            return False
-    return True
-
-
-def next_move():
-    best_score = -1000
-    best_move = 0
-
-    for key, value in game_state.items():
-        if value == 0:
-            game_state[key] = 1
-            score = minimax(False)
-            game_state[key] = 0
-            if score > best_score:
-                best_score = score
-                best_move = key
-
-    return best_move - 1
-
-
-def minimax(is_maximizing):
-    if check_winner(game_state, mark=1):
-        return -1
-    elif check_winner(game_state, mark=-1):
-        return 1
-    elif check_draw():
-        return 0
-
-    if is_maximizing:
-        best_score = -1000
-        for key, value in game_state.items():
-            if value == 0:
-                game_state[key] = 1
-                score = minimax(False)
-                game_state[key] = 0
-                if score > best_score:
-                    best_score = score
-
-        return best_score
-    else:
-        best_score = 1000
-        for key, value in game_state.items():
-            if value == 0:
-                game_state[key] = 1
-                score = minimax(True)
-                game_state[key] = 0
-                if score < best_score:
-                    best_score = score
-
-        return best_score
-
-
-# Main WINDOW
 pg.init()
 pg.display.set_caption("TicTacToe")
 window = pg.display.set_mode((WIN_DIM, WIN_DIM))
@@ -115,18 +39,23 @@ markers = []
 
 game_state = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0}
 
-player = 1
-running = True
+ai = AI(game_state)
 
+player = 1
+
+running = True
 while running:
 
     window.fill(BG_COLOR)
 
+    if ai.check_winner(1):
+        running = False
+    elif ai.check_winner(-1):
+        running = False
+    elif ai.check_draw():
+        running = False
+
     for event in pg.event.get():
-        if check_winner(game_state, 1):
-            running = False
-        if check_winner(game_state, -1):
-            running = False
 
         if event.type == pg.QUIT:
             running = False
@@ -149,7 +78,7 @@ while running:
         elif event.type == pg.MOUSEBUTTONUP and player == -1:
             try:
 
-                new_pos = cell_coordinates[next_move()]
+                new_pos = cell_coordinates[ai.next_move()]
                 removed = remove_marked_cell(new_pos)
 
                 update_game_state(player, removed)
@@ -178,9 +107,5 @@ while running:
     grids.create_grids()
 
     pg.display.update()
-
-    running = not check_draw()
-    # running = check_winner(game_state, 1)
-    # running = check_winner(game_state, 2)
 
 pg.quit()

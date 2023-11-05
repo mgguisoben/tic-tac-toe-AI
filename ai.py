@@ -1,25 +1,24 @@
 class AI:
 
-    def __init__(self, state, mark):
+    def __init__(self, state):
         self.state = state
-        self.mark = mark
 
-    def check_winner(self):
-        if self.state[1] == self.state[2] and self.state[1] == self.state[3] and self.state[1] == self.mark:
+    def check_winner(self, mark):
+        if self.state[1] == self.state[2] and self.state[1] == self.state[3] and self.state[1] == mark:
             return True
-        elif self.state[4] == self.state[5] and self.state[4] == self.state[6] and self.state[4] == self.mark:
+        elif self.state[4] == self.state[5] and self.state[4] == self.state[6] and self.state[4] == mark:
             return True
-        elif self.state[7] == self.state[8] and self.state[7] == self.state[9] and self.state[7] == self.mark:
+        elif self.state[7] == self.state[8] and self.state[7] == self.state[9] and self.state[7] == mark:
             return True
-        elif self.state[1] == self.state[4] and self.state[1] == self.state[7] and self.state[1] == self.mark:
+        elif self.state[1] == self.state[4] and self.state[1] == self.state[7] and self.state[1] == mark:
             return True
-        elif self.state[2] == self.state[5] and self.state[2] == self.state[8] and self.state[2] == self.mark:
+        elif self.state[2] == self.state[5] and self.state[2] == self.state[8] and self.state[2] == mark:
             return True
-        elif self.state[3] == self.state[6] and self.state[3] == self.state[9] and self.state[3] == self.mark:
+        elif self.state[3] == self.state[6] and self.state[3] == self.state[9] and self.state[3] == mark:
             return True
-        elif self.state[1] == self.state[5] and self.state[1] == self.state[9] and self.state[1] == self.mark:
+        elif self.state[1] == self.state[5] and self.state[1] == self.state[9] and self.state[1] == mark:
             return True
-        elif self.state[7] == self.state[5] and self.state[7] == self.state[3] and self.state[7] == self.mark:
+        elif self.state[7] == self.state[5] and self.state[7] == self.state[3] and self.state[7] == mark:
             return True
         else:
             return False
@@ -36,7 +35,7 @@ class AI:
 
         for key, value in self.state.items():
             if value == 0:
-                self.state[key] = 1
+                self.state[key] = -1
                 score = self.minimax(False)
                 self.state[key] = 0
                 if score > best_score:
@@ -46,9 +45,9 @@ class AI:
         return best_move - 1
 
     def minimax(self, is_maximizing):
-        if not self.check_winner():
+        if self.check_winner(mark=1):
             return -1
-        elif not self.check_winner():
+        elif self.check_winner(mark=-1):
             return 1
         elif self.check_draw():
             return 0
@@ -57,8 +56,8 @@ class AI:
             best_score = -1000
             for key, value in self.state.items():
                 if value == 0:
-                    self.state[key] = 1
-                    score = minimax(False)
+                    self.state[key] = -1
+                    score = self.minimax(False)
                     self.state[key] = 0
                     if score > best_score:
                         best_score = score
