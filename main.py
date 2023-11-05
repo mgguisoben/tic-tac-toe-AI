@@ -5,7 +5,7 @@ from cells import Cells
 from grids import Grids
 from marker import Marker
 
-BG_COLOR = "white"
+BG_COLOR = "#F9DBBB"
 WIN_DIM = 600
 CELL_DIM = tuple([WIN_DIM / 3] * 2)
 

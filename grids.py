@@ -1,6 +1,6 @@
 import pygame as pg
 
-GRID_COLOR = "black"
+GRID_COLOR = "#4E6E81"
 
 
 class Grids:

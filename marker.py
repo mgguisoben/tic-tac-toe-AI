@@ -1,7 +1,7 @@
 import pygame
 
-PLAYER_COLOR = "green"
-COM_COLOR = "red"
+PLAYER_COLOR = "#2E3840"
+COM_COLOR = "#FF0303"
 
 
 class Marker:
